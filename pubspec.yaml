@@ -12,6 +12,14 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.8
+  dio: ^5.9.0
+  dartz: ^0.10.1
+  flutter_bloc: ^9.1.1
+  get_it: ^8.2.0
+  animate_do: ^4.2.0
+  cached_network_image: ^3.4.1
+  carousel_slider: ^5.1.1
+  google_fonts: ^6.3.1
 
 dev_dependencies:
   flutter_test:
