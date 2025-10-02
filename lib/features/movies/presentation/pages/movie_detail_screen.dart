@@ -10,7 +10,6 @@ import 'package:movies_app/core/utils/enums.dart';
 import 'package:movies_app/features/movies/domain/entities/genres.dart';
 import 'package:movies_app/features/movies/presentation/bloc/movie_details_bloc/movie_details_bloc.dart';
 import 'package:movies_app/features/movies/presentation/bloc/favorite_movies_bloc/favorite_movies_bloc.dart';
-import 'package:movies_app/features/movies/presentation/pages/dummy.dart';
 
 import 'package:shimmer/shimmer.dart';
 
@@ -31,31 +30,15 @@ class MovieDetailScreen extends StatelessWidget {
         ),
         BlocProvider(create: (_) => sl<FavoriteMoviesBloc>()),
       ],
-      child: Scaffold(
-        appBar: AppBar(
-          actions: [
-            BlocBuilder<FavoriteMoviesBloc, FavoriteMoviesState>(
-              builder: (context, state) {
-                return IconButton(
-                  icon: const Icon(Icons.favorite_border),
-                  onPressed: () {
-                    context.read<FavoriteMoviesBloc>().add(
-                      AddToFavoriteEvent(id),
-                    );
-                  },
-                );
-              },
-            ),
-          ],
-        ),
-        body: const MovieDetailContent(),
-      ),
+      child: Scaffold(body: MovieDetailContent(id: id)),
     );
   }
 }
 
 class MovieDetailContent extends StatelessWidget {
-  const MovieDetailContent({super.key});
+  final int id;
+
+  const MovieDetailContent({super.key, required this.id});
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +54,32 @@ class MovieDetailContent extends StatelessWidget {
                 SliverAppBar(
                   pinned: true,
                   expandedHeight: 250.0,
+                  actions: [
+                    BlocBuilder<FavoriteMoviesBloc, FavoriteMoviesState>(
+                      builder: (context, favState) {
+                        final isFav = favState.favoriteMovies.any(
+                          (m) => m.id == id,
+                        );
+                        return IconButton(
+                          icon: Icon(
+                            isFav ? Icons.favorite : Icons.favorite_border,
+                            color: isFav ? Colors.red : Colors.white,
+                          ),
+                          onPressed: () {
+                            if (isFav) {
+                              context.read<FavoriteMoviesBloc>().add(
+                                RemoveFromFavoriteEvent(id),
+                              );
+                            } else {
+                              context.read<FavoriteMoviesBloc>().add(
+                                AddToFavoriteEvent(id),
+                              );
+                            }
+                          },
+                        );
+                      },
+                    ),
+                  ],
                   flexibleSpace: FlexibleSpaceBar(
                     background: FadeIn(
                       duration: const Duration(milliseconds: 500),
@@ -261,42 +270,47 @@ class MovieDetailContent extends StatelessWidget {
 
   Widget _showRecommendations() {
     return BlocBuilder<MovieDetailsBloc, MovieDetailsState>(
-      builder: (context, state) => SliverGrid(
-        delegate: SliverChildBuilderDelegate((context, index) {
-          final recommendation = state.recommendation[index];
-          return FadeInUp(
-            from: 20,
-            duration: const Duration(milliseconds: 500),
-            child: ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(4.0)),
-              child: CachedNetworkImage(
-                imageUrl: ApiConstance.imageUrl(recommendation.backdropPath!),
-                placeholder: (context, url) => Shimmer.fromColors(
-                  baseColor: Colors.grey[850]!,
-                  highlightColor: Colors.grey[800]!,
-                  child: Container(
-                    height: 170.0,
-                    width: 120.0,
-                    decoration: BoxDecoration(
-                      color: Colors.black,
-                      borderRadius: BorderRadius.circular(8.0),
+      builder: (context, state) {
+        if (state.recommendation.isEmpty) {
+          return const SliverToBoxAdapter(child: SizedBox.shrink());
+        }
+        return SliverGrid(
+          delegate: SliverChildBuilderDelegate((context, index) {
+            final recommendation = state.recommendation[index];
+            return FadeInUp(
+              from: 20,
+              duration: const Duration(milliseconds: 500),
+              child: ClipRRect(
+                borderRadius: const BorderRadius.all(Radius.circular(4.0)),
+                child: CachedNetworkImage(
+                  imageUrl: ApiConstance.imageUrl(recommendation.backdropPath!),
+                  placeholder: (context, url) => Shimmer.fromColors(
+                    baseColor: Colors.grey[850]!,
+                    highlightColor: Colors.grey[800]!,
+                    child: Container(
+                      height: 170.0,
+                      width: 120.0,
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
                     ),
                   ),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                  height: 180.0,
+                  fit: BoxFit.cover,
                 ),
-                errorWidget: (context, url, error) => const Icon(Icons.error),
-                height: 180.0,
-                fit: BoxFit.cover,
               ),
-            ),
-          );
-        }, childCount: recommendationDummy.length),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          mainAxisSpacing: 8.0,
-          crossAxisSpacing: 8.0,
-          childAspectRatio: 0.7,
-          crossAxisCount: 3,
-        ),
-      ),
+            );
+          }, childCount: state.recommendation.length),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            mainAxisSpacing: 8.0,
+            crossAxisSpacing: 8.0,
+            childAspectRatio: 0.7,
+            crossAxisCount: 3,
+          ),
+        );
+      },
     );
   }
 }

@@ -50,7 +50,8 @@ class TopRatedComponent extends StatelessWidget {
                               ),
                               child: CachedNetworkImage(
                                 width: 120.0,
-                                fit: BoxFit.cover,
+                                height: 170.0,
+                                fit: BoxFit.fill,
                                 imageUrl: ApiConstance.imageUrl(
                                   movie.backdropPath,
                                 ),

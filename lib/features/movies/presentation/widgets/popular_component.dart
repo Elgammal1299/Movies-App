@@ -44,35 +44,40 @@ class PopularComponent extends StatelessWidget {
                         },
                         child: Stack(
                           children: [
-                            ClipRRect(
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(8.0),
-                              ),
-                              child: CachedNetworkImage(
-                                width: 120.0,
-                                fit: BoxFit.cover,
-                                imageUrl: ApiConstance.imageUrl(
-                                  movie.backdropPath,
-                                ),
-                                placeholder: (context, url) =>
-                                    Shimmer.fromColors(
-                                      baseColor: Colors.grey[850]!,
-                                      highlightColor: Colors.grey[800]!,
-                                      child: Container(
-                                        height: 170.0,
-                                        width: 120.0,
-                                        decoration: BoxDecoration(
-                                          color: Colors.black,
-                                          borderRadius: BorderRadius.circular(
-                                            8.0,
+                            Column(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(8.0),
+                                  ),
+                                  child: CachedNetworkImage(
+                                    width: 120.0,
+                                    height: 170.0,
+                                    fit: BoxFit.fill,
+                                    imageUrl: ApiConstance.imageUrl(
+                                      movie.backdropPath,
+                                    ),
+                                    placeholder: (context, url) =>
+                                        Shimmer.fromColors(
+                                          baseColor: Colors.grey[850]!,
+                                          highlightColor: Colors.grey[800]!,
+                                          child: Container(
+                                            height: 170.0,
+                                            width: 120.0,
+                                            decoration: BoxDecoration(
+                                              color: Colors.black,
+                                              borderRadius:
+                                                  BorderRadius.circular(8.0),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ),
-                                errorWidget: (context, url, error) =>
-                                    const Icon(Icons.error),
-                              ),
+                                    errorWidget: (context, url, error) =>
+                                        const Icon(Icons.error),
+                                  ),
+                                ),
+                              ],
                             ),
+
                             Positioned(
                               top: 8,
                               right: 8,

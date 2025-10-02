@@ -11,6 +11,8 @@ import 'package:movies_app/features/movies/presentation/widgets/popular_componen
 import 'package:movies_app/features/movies/presentation/widgets/top_rated_component.dart';
 import 'package:movies_app/features/movies/presentation/pages/favorites_screen.dart';
 import 'package:movies_app/features/movies/presentation/bloc/favorite_movies_bloc/favorite_movies_bloc.dart';
+import 'package:movies_app/features/movies/presentation/pages/popular_see_more_page.dart';
+import 'package:movies_app/features/movies/presentation/pages/top_rated_see_more_page.dart';
 
 class MoviesScreen extends StatelessWidget {
   const MoviesScreen({super.key});
@@ -70,7 +72,15 @@ class MoviesScreen extends StatelessWidget {
                         ),
                         InkWell(
                           onTap: () {
-                            /// TODO : NAVIGATION TO POPULAR SCREEN
+                            final moviesBloc = context.read<MoviesBloc>();
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => BlocProvider.value(
+                                  value: moviesBloc,
+                                  child: const PopularSeeMorePage(),
+                                ),
+                              ),
+                            );
                           },
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -109,7 +119,15 @@ class MoviesScreen extends StatelessWidget {
                         ),
                         InkWell(
                           onTap: () {
-                            /// TODO : NAVIGATION TO Top Rated Movies Screen
+                            final moviesBloc = context.read<MoviesBloc>();
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => BlocProvider.value(
+                                  value: moviesBloc,
+                                  child: const TopRatedSeeMorePage(),
+                                ),
+                              ),
+                            );
                           },
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),

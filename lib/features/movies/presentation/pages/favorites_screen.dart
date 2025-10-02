@@ -5,6 +5,7 @@ import 'package:movies_app/core/network/api_constance.dart';
 import 'package:movies_app/core/services/services_locator.dart';
 import 'package:movies_app/core/utils/enums.dart';
 import 'package:movies_app/features/movies/presentation/bloc/favorite_movies_bloc/favorite_movies_bloc.dart';
+import 'package:shimmer/shimmer.dart';
 
 class FavoritesScreen extends StatelessWidget {
   const FavoritesScreen({super.key});
@@ -44,14 +45,55 @@ class FavoritesScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
-                      child: ClipRRect(
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(8),
-                        ),
-                        child: CachedNetworkImage(
-                          imageUrl: ApiConstance.imageUrl(movie.backdropPath),
-                          fit: BoxFit.cover,
-                        ),
+                      child: Stack(
+                        children: [
+                          ClipRRect(
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(8),
+                            ),
+                            child: CachedNetworkImage(
+                              width: 120.0,
+                              height: 170.0,
+                              fit: BoxFit.fill,
+                              imageUrl: ApiConstance.imageUrl(
+                                movie.backdropPath,
+                              ),
+                              placeholder: (context, url) => Shimmer.fromColors(
+                                baseColor: Colors.grey[850]!,
+                                highlightColor: Colors.grey[800]!,
+                                child: Container(
+                                  height: 170.0,
+                                  width: 120.0,
+                                  decoration: BoxDecoration(
+                                    color: Colors.black,
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                ),
+                              ),
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.error),
+                            ),
+                          ),
+                          Positioned(
+                            top: 8,
+                            right: 8,
+                            child: Material(
+                              color: Colors.black45,
+                              shape: const CircleBorder(),
+                              child: IconButton(
+                                icon: const Icon(
+                                  Icons.favorite,
+                                  color: Colors.red,
+                                ),
+                                onPressed: () {
+                                  context.read<FavoriteMoviesBloc>().add(
+                                    RemoveFromFavoriteEvent(movie.id),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     const SizedBox(height: 6),
