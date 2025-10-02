@@ -1,14 +1,14 @@
 import 'package:get_it/get_it.dart';
-import 'package:movies_app/feature/movies/features/movies/data/datasources/movie_remote_data_source.dart';
-import 'package:movies_app/feature/movies/features/movies/data/repositories/movies_repository.dart';
-import 'package:movies_app/feature/movies/features/movies/domain/repositories/base_movies_repository.dart';
-import 'package:movies_app/feature/movies/features/movies/domain/usecases/get_movie_details_usecase.dart';
-import 'package:movies_app/feature/movies/features/movies/domain/usecases/get_now_playing_movies_usecase.dart';
-import 'package:movies_app/feature/movies/features/movies/domain/usecases/get_popular_movies_usecase.dart';
-import 'package:movies_app/feature/movies/features/movies/domain/usecases/get_recommendation_usecase.dart';
-import 'package:movies_app/feature/movies/features/movies/domain/usecases/get_top_rated_movies_usecase.dart';
-import 'package:movies_app/feature/movies/features/movies/presentation/bloc/movie_details_bloc/movie_details_bloc.dart';
-import 'package:movies_app/feature/movies/features/movies/presentation/bloc/movies_bloc.dart';
+import 'package:movies_app/features/movies/data/datasources/movie_remote_data_source.dart';
+import 'package:movies_app/features/movies/data/repositories/movies_repository.dart';
+import 'package:movies_app/features/movies/domain/repositories/base_movies_repository.dart';
+import 'package:movies_app/features/movies/domain/usecases/get_movie_details_usecase.dart';
+import 'package:movies_app/features/movies/domain/usecases/get_now_playing_movies_usecase.dart';
+import 'package:movies_app/features/movies/domain/usecases/get_popular_movies_usecase.dart';
+import 'package:movies_app/features/movies/domain/usecases/get_recommendation_usecase.dart';
+import 'package:movies_app/features/movies/domain/usecases/get_top_rated_movies_usecase.dart';
+import 'package:movies_app/features/movies/presentation/bloc/movie_details_bloc/movie_details_bloc.dart';
+import 'package:movies_app/features/movies/presentation/bloc/movies_bloc.dart';
 
 final sl = GetIt.instance;
 
