@@ -9,20 +9,45 @@ import 'package:movies_app/features/movies/presentation/bloc/movies_state.dart';
 import 'package:movies_app/features/movies/presentation/widgets/now_playing_component.dart';
 import 'package:movies_app/features/movies/presentation/widgets/popular_component.dart';
 import 'package:movies_app/features/movies/presentation/widgets/top_rated_component.dart';
+import 'package:movies_app/features/movies/presentation/pages/favorites_screen.dart';
+import 'package:movies_app/features/movies/presentation/bloc/favorite_movies_bloc/favorite_movies_bloc.dart';
 
 class MoviesScreen extends StatelessWidget {
   const MoviesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (BuildContext context) => sl<MoviesBloc>()
-        ..add(GetNowPlayingMoviesEvent())
-        ..add(GetPopularMoviesEvent())
-        ..add(GetTopRatedMoviesEvent()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (BuildContext context) => sl<MoviesBloc>()
+            ..add(GetNowPlayingMoviesEvent())
+            ..add(GetPopularMoviesEvent())
+            ..add(GetTopRatedMoviesEvent()),
+        ),
+        BlocProvider(
+          create: (_) =>
+              sl<FavoriteMoviesBloc>()..add(const GetFavoriteMoviesEvent()),
+        ),
+      ],
       child: BlocBuilder<MoviesBloc, MoviesState>(
         builder: (context, state) {
           return Scaffold(
+            appBar: AppBar(
+              title: const Text(AppString.appName),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.favorite_border),
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const FavoritesScreen(),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
             body: SingleChildScrollView(
               key: const Key('movieScrollView'),
               child: Column(

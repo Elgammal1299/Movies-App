@@ -9,6 +9,7 @@ import 'package:movies_app/core/utils/app_string.dart';
 import 'package:movies_app/core/utils/enums.dart';
 import 'package:movies_app/features/movies/domain/entities/genres.dart';
 import 'package:movies_app/features/movies/presentation/bloc/movie_details_bloc/movie_details_bloc.dart';
+import 'package:movies_app/features/movies/presentation/bloc/favorite_movies_bloc/favorite_movies_bloc.dart';
 import 'package:movies_app/features/movies/presentation/pages/dummy.dart';
 
 import 'package:shimmer/shimmer.dart';
@@ -16,26 +17,45 @@ import 'package:shimmer/shimmer.dart';
 class MovieDetailScreen extends StatelessWidget {
   final int id;
 
-  const MovieDetailScreen({Key? key, required this.id}) : super(key: key);
+  const MovieDetailScreen({super.key, required this.id});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => sl<MovieDetailsBloc>()
-        ..add(GetMovieDetailsEvent(id))
-        ..add(GetMovieRecommendationEvent(id)),
-      lazy: false,
-      child: const Scaffold(
-        body: MovieDetailContent(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => sl<MovieDetailsBloc>()
+            ..add(GetMovieDetailsEvent(id))
+            ..add(GetMovieRecommendationEvent(id)),
+          lazy: false,
+        ),
+        BlocProvider(create: (_) => sl<FavoriteMoviesBloc>()),
+      ],
+      child: Scaffold(
+        appBar: AppBar(
+          actions: [
+            BlocBuilder<FavoriteMoviesBloc, FavoriteMoviesState>(
+              builder: (context, state) {
+                return IconButton(
+                  icon: const Icon(Icons.favorite_border),
+                  onPressed: () {
+                    context.read<FavoriteMoviesBloc>().add(
+                      AddToFavoriteEvent(id),
+                    );
+                  },
+                );
+              },
+            ),
+          ],
+        ),
+        body: const MovieDetailContent(),
       ),
     );
   }
 }
 
 class MovieDetailContent extends StatelessWidget {
-  const MovieDetailContent({
-    Key? key,
-  }) : super(key: key);
+  const MovieDetailContent({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -43,9 +63,7 @@ class MovieDetailContent extends StatelessWidget {
       builder: (context, state) {
         switch (state.movieDetailsState) {
           case RequestState.loading:
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           case RequestState.loaded:
             return CustomScrollView(
               key: const Key('movieDetailScrollView'),
@@ -76,7 +94,8 @@ class MovieDetailContent extends StatelessWidget {
                         child: CachedNetworkImage(
                           width: MediaQuery.of(context).size.width,
                           imageUrl: ApiConstance.imageUrl(
-                              state.movieDetail!.backdropPath),
+                            state.movieDetail!.backdropPath,
+                          ),
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -92,12 +111,14 @@ class MovieDetailContent extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(state.movieDetail!.title,
-                              style: GoogleFonts.poppins(
-                                fontSize: 23,
-                                fontWeight: FontWeight.w700,
-                                letterSpacing: 1.2,
-                              )),
+                          Text(
+                            state.movieDetail!.title,
+                            style: GoogleFonts.poppins(
+                              fontSize: 23,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 1.2,
+                            ),
+                          ),
                           const SizedBox(height: 8.0),
                           Row(
                             children: [
@@ -241,37 +262,34 @@ class MovieDetailContent extends StatelessWidget {
   Widget _showRecommendations() {
     return BlocBuilder<MovieDetailsBloc, MovieDetailsState>(
       builder: (context, state) => SliverGrid(
-        delegate: SliverChildBuilderDelegate(
-          (context, index) {
-            final recommendation = state.recommendation[index];
-            return FadeInUp(
-              from: 20,
-              duration: const Duration(milliseconds: 500),
-              child: ClipRRect(
-                borderRadius: const BorderRadius.all(Radius.circular(4.0)),
-                child: CachedNetworkImage(
-                  imageUrl: ApiConstance.imageUrl(recommendation.backdropPath!),
-                  placeholder: (context, url) => Shimmer.fromColors(
-                    baseColor: Colors.grey[850]!,
-                    highlightColor: Colors.grey[800]!,
-                    child: Container(
-                      height: 170.0,
-                      width: 120.0,
-                      decoration: BoxDecoration(
-                        color: Colors.black,
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
+        delegate: SliverChildBuilderDelegate((context, index) {
+          final recommendation = state.recommendation[index];
+          return FadeInUp(
+            from: 20,
+            duration: const Duration(milliseconds: 500),
+            child: ClipRRect(
+              borderRadius: const BorderRadius.all(Radius.circular(4.0)),
+              child: CachedNetworkImage(
+                imageUrl: ApiConstance.imageUrl(recommendation.backdropPath!),
+                placeholder: (context, url) => Shimmer.fromColors(
+                  baseColor: Colors.grey[850]!,
+                  highlightColor: Colors.grey[800]!,
+                  child: Container(
+                    height: 170.0,
+                    width: 120.0,
+                    decoration: BoxDecoration(
+                      color: Colors.black,
+                      borderRadius: BorderRadius.circular(8.0),
                     ),
                   ),
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
-                  height: 180.0,
-                  fit: BoxFit.cover,
                 ),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
+                height: 180.0,
+                fit: BoxFit.cover,
               ),
-            );
-          },
-          childCount: recommendationDummy.length,
-        ),
+            ),
+          );
+        }, childCount: recommendationDummy.length),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           mainAxisSpacing: 8.0,
           crossAxisSpacing: 8.0,

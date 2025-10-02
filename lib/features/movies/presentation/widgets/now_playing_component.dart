@@ -8,6 +8,7 @@ import 'package:movies_app/core/utils/enums.dart';
 import 'package:movies_app/features/movies/presentation/bloc/movies_bloc.dart';
 import 'package:movies_app/features/movies/presentation/bloc/movies_state.dart';
 import 'package:movies_app/features/movies/presentation/pages/movie_detail_screen.dart';
+import 'package:movies_app/features/movies/presentation/bloc/favorite_movies_bloc/favorite_movies_bloc.dart';
 
 class NowPlayingComponent extends StatelessWidget {
   const NowPlayingComponent({super.key});
@@ -47,6 +48,50 @@ class NowPlayingComponent extends StatelessWidget {
                     },
                     child: Stack(
                       children: [
+                        Positioned(
+                          top: 12,
+                          right: 12,
+                          child:
+                              BlocBuilder<
+                                FavoriteMoviesBloc,
+                                FavoriteMoviesState
+                              >(
+                                builder: (context, favState) {
+                                  final isFav = favState.favoriteMovies.any(
+                                    (m) => m.id == item.id,
+                                  );
+                                  return Material(
+                                    color: Colors.black45,
+                                    shape: const CircleBorder(),
+                                    child: IconButton(
+                                      icon: Icon(
+                                        isFav
+                                            ? Icons.favorite
+                                            : Icons.favorite_border,
+                                        color: isFav
+                                            ? Colors.red
+                                            : Colors.white,
+                                      ),
+                                      onPressed: () {
+                                        if (isFav) {
+                                          context
+                                              .read<FavoriteMoviesBloc>()
+                                              .add(
+                                                RemoveFromFavoriteEvent(
+                                                  item.id,
+                                                ),
+                                              );
+                                        } else {
+                                          context
+                                              .read<FavoriteMoviesBloc>()
+                                              .add(AddToFavoriteEvent(item.id));
+                                        }
+                                      },
+                                    ),
+                                  );
+                                },
+                              ),
+                        ),
                         ShaderMask(
                           shaderCallback: (rect) {
                             return const LinearGradient(

@@ -2,11 +2,14 @@ import 'package:get_it/get_it.dart';
 import 'package:movies_app/features/movies/data/datasources/movie_remote_data_source.dart';
 import 'package:movies_app/features/movies/data/repositories/movies_repository.dart';
 import 'package:movies_app/features/movies/domain/repositories/base_movies_repository.dart';
+import 'package:movies_app/features/movies/domain/usecases/add_to_favorite_usecase.dart';
+import 'package:movies_app/features/movies/domain/usecases/get_favorite_movies_usecase.dart';
 import 'package:movies_app/features/movies/domain/usecases/get_movie_details_usecase.dart';
 import 'package:movies_app/features/movies/domain/usecases/get_now_playing_movies_usecase.dart';
 import 'package:movies_app/features/movies/domain/usecases/get_popular_movies_usecase.dart';
 import 'package:movies_app/features/movies/domain/usecases/get_recommendation_usecase.dart';
 import 'package:movies_app/features/movies/domain/usecases/get_top_rated_movies_usecase.dart';
+import 'package:movies_app/features/movies/presentation/bloc/favorite_movies_bloc/favorite_movies_bloc.dart';
 import 'package:movies_app/features/movies/presentation/bloc/movie_details_bloc/movie_details_bloc.dart';
 import 'package:movies_app/features/movies/presentation/bloc/movies_bloc.dart';
 
@@ -17,6 +20,7 @@ class ServicesLocator {
     /// Bloc
     sl.registerFactory(() => MoviesBloc(sl(), sl(), sl()));
     sl.registerFactory(() => MovieDetailsBloc(sl(), sl()));
+    sl.registerFactory(() => FavoriteMoviesBloc(sl(), sl()));
 
     /// Use Cases
     sl.registerLazySingleton(() => GetNowPlayingMoviesUseCase(sl()));
@@ -24,6 +28,8 @@ class ServicesLocator {
     sl.registerLazySingleton(() => GetTopRatedMoviesUseCase(sl()));
     sl.registerLazySingleton(() => GetMovieDetailsUseCase(sl()));
     sl.registerLazySingleton(() => GetRecommendationUseCase(sl()));
+    sl.registerLazySingleton(() => AddToFavoriteUseCase(sl()));
+    sl.registerLazySingleton(() => GetFavoriteMoviesUseCase(sl()));
 
     /// Repository
     sl.registerLazySingleton<BaseMoviesRepository>(
@@ -34,5 +40,6 @@ class ServicesLocator {
     sl.registerLazySingleton<BaseMovieRemoteDataSource>(
       () => MovieRemoteDataSource(),
     );
+    
   }
 }
