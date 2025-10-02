@@ -1,4 +1,6 @@
 import 'package:dartz/dartz.dart';
+import 'package:movies_app/core/error/failure.dart';
+import 'package:movies_app/core/usecase/base_usecase.dart';
 import 'package:movies_app/feature/movies/features/movies/domain/entities/movie.dart';
 import 'package:movies_app/feature/movies/features/movies/domain/repositories/base_movies_repository.dart';
 
