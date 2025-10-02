@@ -1,10 +1,16 @@
-# 🎬 Movies App
+<img width="1080" height="2400" alt="Screenshot_1759416359" src="https://github.com/user-attachments/assets/59825f0a-b93e-4887-878d-1bd855132b06" /># 🎬 Movies App
 
 A modern Flutter application for browsing and managing movies using The Movie Database (TMDB) API. Built with Clean Architecture principles and BLoC pattern for state management.
+
+ <img width="1080" height="2400" alt="Screenshot_1759416359" src="https://github.com/user-attachments/assets/b7d92d9d-d60a-41fc-988e-a30ca6d08f1a" />
+
+
 <img width="1080" height="2400" alt="Screenshot_1759416366" src="https://github.com/user-attachments/assets/4a7d1d92-587f-4652-8f60-5e5711df9bb1" />
+
 <img width="1080" height="2400" alt="Screenshot_1759416374" src="https://github.com/user-attachments/assets/3f96cd3a-445a-4262-b7b7-c8a07c553923" />
+
 <img width="1080" height="2400" alt="Screenshot_1759416381" src="https://github.com/user-attachments/assets/7747ffc2-deb0-43ff-b8f8-0e27ed5fc453" />
-<img width="1080" height="2400" alt="Screenshot_1759416326" src="https://github.com/user-attachments/assets/0d0ad1c9-a368-486b-ae1f-67eac1b874df" />
+
 
 
 
@@ -226,3 +232,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Get movie recommendations
 - Add/remove movies from favorites
 - Responsive UI with smooth animations
+
