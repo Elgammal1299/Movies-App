@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:movies_app/core/error/exceptions.dart';
 import 'package:movies_app/core/error/failure.dart';
 import 'package:movies_app/features/movies/data/datasources/movie_remote_data_source.dart';
+import 'package:movies_app/features/movies/data/mappers/mappers.dart';
 import 'package:movies_app/features/movies/domain/entities/movie.dart';
 import 'package:movies_app/features/movies/domain/entities/movie_detail.dart';
 import 'package:movies_app/features/movies/domain/entities/recommendation.dart';
@@ -11,7 +12,6 @@ import 'package:movies_app/features/movies/domain/usecases/get_favorite_movies_u
 import 'package:movies_app/features/movies/domain/usecases/get_movie_details_usecase.dart';
 import 'package:movies_app/features/movies/domain/usecases/get_recommendation_usecase.dart';
 
-
 class MoviesRepository extends BaseMoviesRepository {
   final BaseMovieRemoteDataSource baseMovieRemoteDataSource;
 
@@ -19,9 +19,9 @@ class MoviesRepository extends BaseMoviesRepository {
 
   @override
   Future<Either<Failure, List<Movie>>> getNowPlayingMovies() async {
-    final result = await baseMovieRemoteDataSource.getNowPlayingMovies();
     try {
-      return Right(result);
+      final result = await baseMovieRemoteDataSource.getNowPlayingMovies();
+      return Right(MovieMapper.toEntityList(result));
     } on ServerException catch (failure) {
       return Left(ServerFailure(failure.errorMessageModel.statusMessage));
     }
@@ -29,9 +29,9 @@ class MoviesRepository extends BaseMoviesRepository {
 
   @override
   Future<Either<Failure, List<Movie>>> getPopularMovies() async {
-    final result = await baseMovieRemoteDataSource.getPopularMovies();
     try {
-      return Right(result);
+      final result = await baseMovieRemoteDataSource.getPopularMovies();
+      return Right(MovieMapper.toEntityList(result));
     } on ServerException catch (failure) {
       return Left(ServerFailure(failure.errorMessageModel.statusMessage));
     }
@@ -39,9 +39,9 @@ class MoviesRepository extends BaseMoviesRepository {
 
   @override
   Future<Either<Failure, List<Movie>>> getTopRatedMovies() async {
-    final result = await baseMovieRemoteDataSource.getTopRatedMovies();
     try {
-      return Right(result);
+      final result = await baseMovieRemoteDataSource.getTopRatedMovies();
+      return Right(MovieMapper.toEntityList(result));
     } on ServerException catch (failure) {
       return Left(ServerFailure(failure.errorMessageModel.statusMessage));
     }
@@ -49,10 +49,13 @@ class MoviesRepository extends BaseMoviesRepository {
 
   @override
   Future<Either<Failure, MovieDetail>> getMovieDetails(
-      MovieDetailsParameters parameters) async {
-    final result = await baseMovieRemoteDataSource.getMovieDetails(parameters);
+    MovieDetailsParameters parameters,
+  ) async {
     try {
-      return Right(result);
+      final result = await baseMovieRemoteDataSource.getMovieDetails(
+        parameters,
+      );
+      return Right(MovieDetailsMapper.toEntity(result));
     } on ServerException catch (failure) {
       return Left(ServerFailure(failure.errorMessageModel.statusMessage));
     }
@@ -60,21 +63,29 @@ class MoviesRepository extends BaseMoviesRepository {
 
   @override
   Future<Either<Failure, List<Recommendation>>> getRecommendation(
-      RecommendationParameters parameters) async {
-    final result =
-        await baseMovieRemoteDataSource.getRecommendation(parameters);
+    RecommendationParameters parameters,
+  ) async {
     try {
-      return Right(result);
+      final result = await baseMovieRemoteDataSource.getRecommendation(
+        parameters,
+      );
+      return Right(RecommendationMapper.toEntityList(result));
     } on ServerException catch (failure) {
       return Left(ServerFailure(failure.errorMessageModel.statusMessage));
     }
   }
-   @override
+
+  @override
   Future<Either<Failure, bool>> addToFavorite(
-      AddToFavoriteParameters parameters) async {
+    AddToFavoriteParameters parameters,
+  ) async {
     try {
       final result = await baseMovieRemoteDataSource.addToFavorite(parameters);
-      return Right(result.statusCode == 1 || result.statusCode == 12 || result.statusCode == 13);
+      return Right(
+        result.statusCode == 1 ||
+            result.statusCode == 12 ||
+            result.statusCode == 13,
+      );
     } on ServerException catch (failure) {
       return Left(ServerFailure(failure.errorMessageModel.statusMessage));
     }
@@ -82,10 +93,13 @@ class MoviesRepository extends BaseMoviesRepository {
 
   @override
   Future<Either<Failure, List<Movie>>> getFavoriteMovies(
-      FavoriteMoviesParameters parameters) async {
+    FavoriteMoviesParameters parameters,
+  ) async {
     try {
-      final result = await baseMovieRemoteDataSource.getFavoriteMovies(parameters);
-      return Right(result);
+      final result = await baseMovieRemoteDataSource.getFavoriteMovies(
+        parameters,
+      );
+      return Right(MovieMapper.toEntityList(result));
     } on ServerException catch (failure) {
       return Left(ServerFailure(failure.errorMessageModel.statusMessage));
     }

@@ -1,14 +1,9 @@
+class GenresModel {
+  final String name;
+  final int id;
 
-import 'package:movies_app/features/movies/domain/entities/genres.dart';
+  const GenresModel({required this.name, required this.id});
 
-class GenresModel extends Genres {
-  const GenresModel({
-    required super.name,
-    required super.id,
-  });
-
-  factory GenresModel.fromJson(Map<String, dynamic> json) => GenresModel(
-        id: json["id"],
-        name: json["name"],
-      );
+  factory GenresModel.fromJson(Map<String, dynamic> json) =>
+      GenresModel(id: json["id"], name: json["name"]);
 }

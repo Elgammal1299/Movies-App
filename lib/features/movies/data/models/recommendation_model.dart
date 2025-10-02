@@ -1,7 +1,8 @@
-import 'package:movies_app/features/movies/domain/entities/recommendation.dart';
+class RecommendationModel {
+  final String? backdropPath;
+  final int id;
 
-class RecommendationModel extends Recommendation {
-  const RecommendationModel({super.backdropPath, required super.id});
+  const RecommendationModel({this.backdropPath, required this.id});
 
   factory RecommendationModel.fromJson(Map<String, dynamic> json) =>
       RecommendationModel(
